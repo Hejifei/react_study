@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import TemperatureInput from './LiftingStateUp';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
@@ -151,19 +152,141 @@ ReactDOM.render(
     document.getElementById('login')
 );
 
-
+// 列表
+function ListItem(props) {
+  // Correct! There is no need to specify the key here:
+  return <li>{props.value}</li>;
+}
 function NumberList(props){
     const numbers = props.numbers;
-    const listItems = numbers.map((number) =>
-        <li>{number}</li>
+    const listItems = numbers.map((number,index) =>
+      // “键”是创建元素列表时需要包含的特殊字符串属性
+      // 正常用数据的id作为关键字，也可以以索引作为关键字
+      // <li key={index}>{number}</li>
+      // 或
+      <ListItem key={index} value={number} />
     );
     return (
-        <ul>{listItems}</ul>
+        // <ul>{listItems}</ul>
+        <ul>
+          {numbers.map((number,index)=>
+            <ListItem key={index} value={number} />
+          )}
+        </ul>
     )
 }
 const numbers = [1, 2, 3, 4, 5];
 
 ReactDOM.render(
-    <NumberList numbers={numbers} />,
-    document.getElementById('ullist')
-  );
+  <NumberList numbers={numbers} />,
+  document.getElementById('ullist')
+);
+
+
+// 受控组件
+class NameForm extends React.Component{
+  constructor(props){
+    super(props);
+    this.state={
+      value:'',
+      textareavalue:'Please write an essay about your favorite DOM element.',
+      selectValue:2,
+      isGoing: true,
+      numberOfGuests: 2
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.textareaChange = this.textareaChange.bind(this);
+    this.selectChange = this.selectChange.bind(this);
+    this.handleInputsChange = this.handleInputsChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    
+  }
+
+  handleChange(event){
+    this.setState({value:event.target.value.toUpperCase()});
+  }
+  textareaChange(event){
+    this.setState({textareavalue: event.target.textareavalue});
+  }
+  selectChange(event){
+    this.setState({selectChange: event.target.selectChange});
+  }
+  handleInputsChange(event){
+    const target = event.target;
+    const checkinputvalue = target.type === 'checkbox' ? target.checked :target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]:checkinputvalue
+    })
+    alert([name]+' = '+checkinputvalue+`${name}:${checkinputvalue}`)
+  }
+  handleSubmit(event){
+    alert(
+      `Selected file - ${
+        this.fileInput.files[0].name
+      }`
+    );
+    event.preventDefault();
+  }
+  render(){
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <label>
+          Upload file:
+          <input 
+            type="file" 
+            ref={input => {
+              this.fileInput = input;
+            }} 
+          />
+        </label>
+        <label>
+          Essay:
+          <textarea value={this.state.textareavalue} onChange={this.textareaChange} />
+        </label>
+        <label>
+          Pick your favourite option:
+          <select value={this.state.selectValue} onChange={this.selectChange}>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </label>
+        <label>
+          Is going:
+          <input 
+            name="isGoing"
+            type="checkbox"
+            checked={this.state.isGoing}
+            onChange={this.handleInputsChange}
+          />
+        </label>
+        <br />
+        <label>
+          Number of guests:
+          <input 
+            name="numberOfGuests"
+            type="number"
+            value={this.state.numberOfGuests}
+            onChange={this.handleInputsChange}
+          />
+        </label>
+        <input type="submit" value="Submit"/>
+      </form>
+    )
+  }
+}
+
+ReactDOM.render(
+  <NameForm />,
+  document.getElementById('formC')
+)
+
+
+ReactDOM.render(<TemperatureInput />, document.getElementById('LiftingStateUpC'));
