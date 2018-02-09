@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import TemperatureInput from './LiftingStateUp';
+import Calculator from './LiftingStateUp';
+import SignUpDialog from './Composition';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
@@ -289,4 +290,35 @@ ReactDOM.render(
 )
 
 
-ReactDOM.render(<TemperatureInput />, document.getElementById('LiftingStateUpC'));
+class LikeButton extends React.Component{
+  constructor(props){
+    super(props);
+    this.state={
+      liked: true
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(event){
+    // this.setState(prevState => ({
+    //   liked: !prevState.liked
+    // }));
+    this.setState({liked: !this.state.liked});
+  }
+  render() {
+    var text = this.state.liked ? '喜欢' : '不喜欢';
+    return (
+      <p onClick={this.handleClick}>
+        你<b>{text}</b>我。点我切换状态。
+      </p>
+    );
+  }
+}
+
+ReactDOM.render(
+<LikeButton />,
+document.getElementById('reactstate')
+);
+
+
+ReactDOM.render(<Calculator />, document.getElementById('LiftingStateUpC'));
+ReactDOM.render(<SignUpDialog />, document.getElementById('SignUpDialogC'));
